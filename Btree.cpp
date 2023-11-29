@@ -1,6 +1,10 @@
 //
-// Created by Jacqueline Edoro on 11/24/23.
+// Created by ryanj on 11/29/2023.
 //
+
+//For this commit I just cleaned up the cpp file and labeled the methods I'm working on.
+//I decided printing out the repeatednum inside the method is the best approach
+
 #include "Btree.h"
 #include <iostream>
 
@@ -9,13 +13,13 @@
 Node::Node(int min_key, bool leaf){
     //we can start with min key 2 for simplicity
     //initializing minimum number of keys and if it is a leaf
-    this->min=min_key;
-    this->isLeaf=false;
+    this->min_key = min_key;
+    this->isLeaf = leaf;
     //resizing keys and child vectors
-    this->keys.resize(2*t-1);
-    this->child.resize(2*t);
+    this->keys.resize(2 * min_key - 1);
+    this->child.resize(2 * min_key);
     //no keys have been inserted so num keys is 0
-    this->num_keys=0;
+    this->num_keys = 0;
 }
 
 
@@ -24,12 +28,12 @@ Node::Node(int min_key, bool leaf){
 ///
 
 //traverse all nodes in a subtree rooted with node
-void traverse(BTreeNode* node){
+void traverse(Node* node){
     // Implement your insertion logic here
     //I would leave this until last since we may or
     //may not need it for the ouput
 }
-//insert helper
+//insert helper - Ryan Jensen
 void insert_non_full(Btree* root, int data){
     // Implement your insertion logic here
 }
@@ -42,9 +46,9 @@ Node* Btree::insert(int data, Node* root) {
     // Implement your insertion logic here
     return nullptr;
 }
-//search for data in subtree of node given
-int Btree::search(int data, Node* root) {
-    // Implement your search logic here
+//search for data in subtree of node given - Ryan Jensen
+Node* Btree::search(int data, Node* root) {
+
     return nullptr;
 }
 
@@ -55,7 +59,7 @@ int Btree::search(int data, Node* root) {
 
 //Btree constructor
 Btree::Btree(int degree) {
-    //we set the minimum degree and root as nullptr as there is
+    //we set the minimum degree to 0 and root as nullptr as there is
     //nothing in the Btree. It will be filled in the insert.
     this->min=degree;
     this->root=nullptr;
@@ -70,6 +74,5 @@ void Btree::insert(int data) {
 //Public search called by user
 void Btree::search(int data) {
     //search returns count of data in Btree
-   this->repeated_num=search(int data, this->root);
+    search(data, this->root);
 }
-
