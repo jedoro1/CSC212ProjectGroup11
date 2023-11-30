@@ -67,32 +67,32 @@ class Btree{
         //splits nodes if too big
         void split_child(Btree* root, int data);
 
-        //Removes a key from the B-tree while preserving the B-tree properties.
-        void deleteKey(int data);
+        // //Removes a key from the B-tree while preserving the B-tree properties.
+        // void deleteKey(int data);
 
-        // Merges two nodes when deleting a key
-        void mergeNodes(Node* node1, Node* node2);
+        // // Merges two nodes when deleting a key
+        // void mergeNodes(Node* node1, Node* node2);
 
-        // Splits a node into two nodes when it becomes full
-        void split(Node* node);
+        // // Splits a node into two nodes when it becomes full
+        // void split(Node* node);
 
-        // Merges a node with its sibling when it becomes underflowed
-        void merge(Node* node);
+        // // Merges a node with its sibling when it becomes underflowed
+        // void merge(Node* node);
 
-        // Finds the successor key in the B-tree
-        int findSuccessor(int data);
+        // // Finds the successor key in the B-tree
+        // int findSuccessor(int data);
 
-        // Finds the predecessor key in the B-tree
-        int findPredecessor(int data);
+        // // Finds the predecessor key in the B-tree
+        // int findPredecessor(int data);
 
-        // Retrieves all key-value pairs within the given range
-        void rangeQuery(int start, int end);
+        // // Retrieves all key-value pairs within the given range
+        // void rangeQuery(int start, int end);
 
-        // Adjusts the B-tree structure after a deletion operation
-        void adjustAfterDelete(Node* node);
+        // // Adjusts the B-tree structure after a deletion operation
+        // void adjustAfterDelete(Node* node);
 
-        // Adjusts the B-tree structure after an insertion operation
-        void adjustAfterInsert(Node* node);
+        // // Adjusts the B-tree structure after an insertion operation
+        // void adjustAfterInsert(Node* node);
 
         // Calculates and returns the height of the B-tree
         int getHeight();
