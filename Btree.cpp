@@ -1,10 +1,6 @@
 //
 // Created by ryanj on 11/29/2023.
 //
-
-//For this commit I just cleaned up the cpp file and labeled the methods I'm working on.
-//I decided printing out the repeatednum inside the method is the best approach
-
 #include "Btree.h"
 #include <iostream>
 
@@ -33,23 +29,113 @@ void traverse(Node* node){
     //I would leave this until last since we may or
     //may not need it for the ouput
 }
+
 //insert helper - Ryan Jensen
 void insert_non_full(Btree* root, int data){
     // Implement your insertion logic here
 }
+
 //insert helper
 void split_child(Btree* root, int data){
     // Implement your insertion logic here
 }
+
 //main insert
+//make sure somewhere in insert that you update
+//num_keys for the search method :)
 Node* Btree::insert(int data, Node* root) {
     // Implement your insertion logic here
     return nullptr;
 }
+
 //search for data in subtree of node given - Ryan Jensen
 Node* Btree::search(int data, Node* root) {
+    int i = 0;
 
-    return nullptr;
+    //Loop that finds the specific index
+    while (i < root->num_keys && root->keys[i] < data) {
+        i++;
+    }
+
+    //Checks if we've reached the key
+    if (data == root->keys[i] && i < root->num_keys){
+        return root;
+    }
+
+    //Check if the node is a leaf
+    if (root->isLeaf){
+        return nullptr;
+    }
+
+    //Recursively move to the child node.
+    return search(data, root->child[i]);
+}
+
+//Removes a key from the B-tree while preserving the B-tree properties.
+void Btree::deleteKey(int data){
+
+
+}
+
+// Merges two nodes when deleting a key
+void Btree::mergeNodes(Node* node1, Node* node2){
+
+
+}
+
+// Splits a node into two nodes when it becomes full
+void Btree::split(Node* node){
+
+
+}
+
+// Merges a node with its sibling when it becomes underflowed
+void Btree::merge(Node* node){
+
+
+}
+
+// Finds the successor key in the B-tree
+int Btree::findSuccessor(int data){
+
+    return 0;
+}
+
+// Finds the predecessor key in the B-tree
+int Btree::findPredecessor(int data){
+
+    return 0;
+}
+
+// Retrieves all key-value pairs within the given range
+void Btree::rangeQuery(int start, int end){
+
+
+}
+
+// Adjusts the B-tree structure after a deletion operation
+void Btree::adjustAfterDelete(Node* node){
+
+
+}
+
+// Adjusts the B-tree structure after an insertion operation
+void Btree::adjustAfterInsert(Node* node){
+
+
+}
+
+// Calculates and returns the height of the B-tree
+int Btree::getHeight(){
+    int height;
+
+    return height;
+}
+
+// Prints the structure of the B-tree for visualization and debugging purposes
+void Btree::printTree(){
+
+
 }
 
 ////
