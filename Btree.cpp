@@ -48,8 +48,25 @@ Node* Btree::insert(int data, Node* root) {
 }
 //search for data in subtree of node given - Ryan Jensen
 Node* Btree::search(int data, Node* root) {
+    int i = 0;
 
-    return nullptr;
+    //Loop that finds the specific index
+    while (i < root->num_keys && root->keys[i] < data) {
+        i++;
+    }
+
+    //Checks if we've reached the key
+    if (data == root->keys[i] && i < root->num_keys){
+        return root;
+    }
+
+    //Check if the node is a leaf
+    if (root->isLeaf){
+        return nullptr;
+    }
+
+    //Recursively move to the child node.
+    return search(data, root->child[i]);
 }
 
 ////
