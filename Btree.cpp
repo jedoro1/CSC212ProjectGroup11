@@ -35,7 +35,46 @@ void traverse(Node* node){
 }
 //insert helper - Ryan Jensen
 void insert_non_full(Btree* root, int data){
-    // Implement your insertion logic here
+    void Btree::insert_non_full(Node* root, int data){
+    int i = root->num_keys - 1;
+
+    //Checks if root is a leaf
+    if (root->isLeaf){
+
+        //Finds location of new key by moving
+        //all the keys forward by one.
+        while(i >= 0 && root->keys[i] > data){
+            root->keys[i+1] = root->keys[i];
+            i--;
+        }
+
+        //Insert new key at location found in while loop
+        root->keys[i+1] = data;
+        root->num_keys++;
+    }
+    //If root is not a leaf
+    else{
+
+        //Finding child node index
+        while(i >= 0 && root->keys[i] > data){
+            i--;
+        }
+
+        //If it's full, split it
+        if(root->child[i+1]->num_keys == 2 * root->min_key - 1) {
+            split_child(root->child[i + 1], i + 1);
+
+            //Checking which of the two sides has the key
+            if (root->keys[i + 1] < data) {
+                i++;
+            }
+
+            //Inserting key
+            insert_non_full(root->child[i + 1], data);
+        }
+    }
+}
+
 }
 //insert helper
 void split_child(Btree* root, int data){
@@ -43,8 +82,36 @@ void split_child(Btree* root, int data){
 }
 //main insert
 Node* Btree::insert(int data, Node* root) {
-    // Implement your insertion logic here
-    return nullptr;
+  //if tree is empty
+   if(root==nullptr){
+       //set root from null to new node
+       root=new Node(t,true);
+       //put in key
+       root->keys.push_back(data);
+       //change the number of keys
+       root->num_keys+=1;
+   }
+   else{
+       //if tree has values, and the number of keys are full in a node
+       if(root->num_keys== 2*this->min_keys-1){
+           //create new node
+            Node* n= new Node(t, false);
+            //make the new node have current root as child
+            n->child.push_back(root);
+            //splits old root into 2 nodes
+            n->split_child(n,0);
+            //set new node as current root
+            this->root=n;
+            //this method is called since the root is now not full
+            this->root.insert_non_full(this->root,data);
+
+       }
+       else{
+           //the tree is not full so we can insert normally
+           this->root.insert_non_full(this->root,data);
+       }
+   }
+    return root;
 }
 //search for data in subtree of node given - Ryan Jensen
 Node* Btree::search(int data, Node* root) {
