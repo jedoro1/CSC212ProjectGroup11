@@ -106,7 +106,7 @@ void Node::split_child(int index, Node* child) {
 }
 
 //main insert -Jaiden Diaz
-Node* Btree::insert(int data, Node* root) {
+void Btree::insert(int key)) {
   //if tree is empty
    if (root == nullptr) {
         // If the tree is empty, create a new root node
@@ -135,7 +135,7 @@ Node* Btree::insert(int data, Node* root) {
 }
 
 //search for data in subtree of node given - Ryan Jensen
-Node* Btree::search(int data, Node* root) {
+Node* Node::search(int key) {
        int i = 0;
     while (i < num_keys && key > keys[i]) {
         i++;
