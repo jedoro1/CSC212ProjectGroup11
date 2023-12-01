@@ -77,9 +77,29 @@ void insert_non_full(Btree* root, int data){
 
 }
 //insert helper
-void split_child(Btree* root, int data){
-    // Implement your insertion logic here
+void split_child(Node* root, int index){
+
+    Node* fullChild = root->children[index];
+    Node* newChild = new Node(fullChild->isLeaf);
+
+    // Move the middle key to the parent
+    int middleKey = fullChild->keys[min_key - 1];
+    root->keys.insert(root->keys.begin() + index, middleKey);
+
+    // Move the keys to the new node
+    newChild->keys.assign(fullChild->keys.begin() + min_key, fullChild->keys.end());
+    fullChild->keys.resize(min_key - 1);
+
+    // If the nodes are not leaf nodes, move the children as well
+    if (!fullChild->isLeaf) {
+        newChild->children.assign(fullChild->children.begin() + min_key, fullChild->children.end());
+        fullChild->children.resize(min_key);
+    }
+
+    // Insert the new node as a child to the parent
+     root->children.insert(root->children.begin() + index + 1, newChild);
 }
+
 //main insert
 Node* Btree::insert(int data, Node* root) {
   //if tree is empty
