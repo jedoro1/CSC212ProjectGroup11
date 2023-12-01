@@ -24,7 +24,7 @@ Node::Node(int min_key, bool isLeaf)
 
 //Jaiden Diaz
 //traverse all nodes in a subtree rooted with node
-void traverse(){
+void Node::traverse(){
     // Implement your insertion logic here
     //I would leave this until last since we may or
     //may not need it for the ouput
