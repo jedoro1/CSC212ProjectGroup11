@@ -105,7 +105,7 @@ void Node::split_child(int index, Node* child) {
 }
 
 //main insert -Jaiden Diaz
-void Btree::insert(int key)) {
+void Btree::insert(int key) {
   //if tree is empty
    if (root == nullptr) {
         // If the tree is empty, create a new root node
