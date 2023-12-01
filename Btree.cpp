@@ -10,16 +10,11 @@
 
 
 //constructor that takes in minimum number of keys and isLeaf
-Node::Node(int min_key, bool leaf){
-    //we can start with min key 2 for simplicity
-    //initializing minimum number of keys and if it is a leaf
-    this->min_key = min_key;
-    this->isLeaf = leaf;
-    //resizing keys and child vectors
-    this->keys.resize(2 * min_key - 1);
-    this->child.resize(2 * min_key);
-    //no keys have been inserted so num keys is 0
-    this->num_keys = 0;
+// Constructor for Node
+Node::Node(int min_key, bool isLeaf)
+    : min_key(min_key), isLeaf(isLeaf), num_keys(0) {
+    keys = new int[2 * min_key - 1];
+    children.resize(2 * min_key);
 }
 
 
@@ -45,126 +40,116 @@ void traverse(){
 }
 
 //insert helper - Ryan Jensen
-void insert_non_full(Btree* root, int data){
-    void Btree::insert_non_full(Node* root, int data){
-    int i = root->num_keys - 1;
+//edited -Jaiden Diaz
+void Node::insert_non_full(int key) {
+    int i = num_keys - 1;
 
-    //Checks if root is a leaf
-    if (root->isLeaf){
-
-        //Finds location of new key by moving
-        //all the keys forward by one.
-        while(i >= 0 && root->keys[i] > data){
-            root->keys[i+1] = root->keys[i];
+    if (isLeaf) {
+        // If the node is a leaf, insert the key into the correct position
+        while (i >= 0 && keys[i] > key) {
+            keys[i + 1] = keys[i];
             i--;
         }
 
-        //Insert new key at location found in while loop
-        root->keys[i+1] = data;
-        root->num_keys++;
-    }
-    //If root is not a leaf
-    else{
-
-        //Finding child node index
-        while(i >= 0 && root->keys[i] > data){
+        keys[i + 1] = key;
+        num_keys++;
+    } else {
+        // If the node is not a leaf, recursively insert into the appropriate child
+        while (i >= 0 && keys[i] > key) {
             i--;
         }
 
-        //If it's full, split it
-        if(root->child[i+1]->num_keys == 2 * root->min_key - 1) {
-            split_child(root->child[i + 1], i + 1);
+        if (children[i + 1]->num_keys == 2 * min_key - 1) {
+            // If the child is full, split the child before insertion
+            split_child(i + 1, children[i + 1]);
 
-            //Checking which of the two sides has the key
-            if (root->keys[i + 1] < data) {
+            if (keys[i + 1] < key) {
                 i++;
             }
+        }
+        children[i + 1]->insert_non_full(key);
+    }
+}
 
-            //Inserting key
-            insert_non_full(root->child[i + 1], data);
+//split child method -Jaiden Diaz
+void Node::split_child(int index, Node* child) {
+    Node* z = new Node(child->min_key, child->isLeaf);
+    z->num_keys = min_key - 1;
+
+    // Copy the last (min_key-1) keys of the full child to the new node
+    for (int j = 0; j < min_key - 1; j++) {
+        z->keys[j] = child->keys[j + min_key];
+    }
+
+    if (!child->isLeaf) {
+        // Copy the last min_key children of the full child to the new node
+        for (int j = 0; j < min_key; j++) {
+            z->children[j] = child->children[j + min_key];
+        }
+    }
+
+    // Update the number of keys in the full child
+    child->num_keys = min_key - 1;
+
+    // Move the pointer to the new node into the parent node
+    for (int j = num_keys; j >= index + 1; j--) {
+        children[j + 1] = children[j];
+    }
+    children[index + 1] = z;
+
+    // Move the key from the full child to the parent node
+    for (int j = num_keys - 1; j >= index; j--) {
+        keys[j + 1] = keys[j];
+    }
+    keys[index] = child->keys[min_key - 1];
+    num_keys++;
+}
+
+//main insert -Jaiden Diaz
+Node* Btree::insert(int data, Node* root) {
+  //if tree is empty
+   if (root == nullptr) {
+        // If the tree is empty, create a new root node
+        root = new Node(min_key, true);
+        root->keys[0] = key;
+        root->num_keys = 1;
+    } else {
+        if (root->num_keys == 2 * min_key - 1) {
+            // If the root is full, create a new root and split the old root
+            Node* s = new Node(min_key, false);
+            s->children[0] = root;
+            s->split_child(0, root);
+
+            int i = 0;
+            if (s->keys[0] < key) {
+                i++;
+            }
+            s->children[i]->insert_non_full(key);
+
+            root = s;
+        } else {
+            // If the root is not full, insert into the root directly
+            root->insert_non_full(key);
         }
     }
 }
 
-}
-//insert helper
-void split_child(Node* root, int index){
-
-    Node* fullChild = root->children[index];
-    Node* newChild = new Node(fullChild->isLeaf);
-
-    // Move the middle key to the parent
-    int middleKey = fullChild->keys[min_key - 1];
-    root->keys.insert(root->keys.begin() + index, middleKey);
-
-    // Move the keys to the new node
-    newChild->keys.assign(fullChild->keys.begin() + min_key, fullChild->keys.end());
-    fullChild->keys.resize(min_key - 1);
-
-    // If the nodes are not leaf nodes, move the children as well
-    if (!fullChild->isLeaf) {
-        newChild->children.assign(fullChild->children.begin() + min_key, fullChild->children.end());
-        fullChild->children.resize(min_key);
-    }
-
-    // Insert the new node as a child to the parent
-     root->children.insert(root->children.begin() + index + 1, newChild);
-}
-
-//main insert
-Node* Btree::insert(int data, Node* root) {
-  //if tree is empty
-   if(root==nullptr){
-       //set root from null to new node
-       root=new Node(t,true);
-       //put in key
-       root->keys.push_back(data);
-       //change the number of keys
-       root->num_keys+=1;
-   }
-   else{
-       //if tree has values, and the number of keys are full in a node
-       if(root->num_keys== 2*this->min_keys-1){
-           //create new node
-            Node* n= new Node(t, false);
-            //make the new node have current root as child
-            n->child.push_back(root);
-            //splits old root into 2 nodes
-            n->split_child(n,0);
-            //set new node as current root
-            this->root=n;
-            //this method is called since the root is now not full
-            this->root.insert_non_full(this->root,data);
-
-       }
-       else{
-           //the tree is not full so we can insert normally
-           this->root.insert_non_full(this->root,data);
-       }
-   }
-    return root;
-}
 //search for data in subtree of node given - Ryan Jensen
 Node* Btree::search(int data, Node* root) {
-    int i = 0;
-
-    //Loop that finds the specific index
-    while (i < root->num_keys && root->keys[i] < data) {
+       int i = 0;
+    while (i < num_keys && key > keys[i]) {
         i++;
     }
 
-    //Checks if we've reached the key
-    if (data == root->keys[i] && i < root->num_keys){
-        return root;
+    if (keys[i] == key) {
+        return this;
     }
 
-    //Check if the node is a leaf
-    if (root->isLeaf){
+    if (isLeaf) {
         return nullptr;
     }
 
-    //Recursively move to the child node.
-    return search(data, root->child[i]);
+    return children[i]->search(key);
 }
 
 ////
@@ -173,28 +158,17 @@ Node* Btree::search(int data, Node* root) {
 
 
 //Btree constructor
-Btree::Btree(int degree) {
-    //we set the minimum degree to 0 and root as nullptr as there is
-    //nothing in the Btree. It will be filled in the insert.
-    this->min=degree;
-    this->root=nullptr;
-}
+// Constructor for BTree
+Btree::Btree(int min_key) : root(nullptr), min_key(min_key) {}
 
-//Public insert called by user
-void Btree::insert(int data) {
-    //setting current root to inserted data
-    this->root = insert(data, this->root);
-}
-
-//Public search called by user
-void Btree::search(int data) {
-    //search returns count of data in Btree
-    search(data, this->root);
-}
-
-//Jaiden Diaz
 // Public method to traverse the entire B-tree
-void BTree::traverse() {
-    if (root != nullptr)
+void Btree::traverse() {
+    if (root != nullptr) {
         root->traverse();
+    }
+}
+
+// Public method to search for a key in the B-tree
+Node* Btree::search(int key) {
+    return (root == nullptr) ? nullptr : root->search(key);
 }
