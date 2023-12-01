@@ -59,7 +59,7 @@ class Btree{
         Node* search(int data, Node* root);
 
         //preorder, post order, in order (probably needed so we generate dot file)
-        void traverse(Node* node);
+        void traverse();
 
         //inserts into a non full node
         void insert_non_full(Btree* root, int data);
