@@ -17,7 +17,7 @@
 
 
 class Node{
-        private:
+private:
         // Keys stored in a vector as integers
         int* keys;
 
@@ -25,7 +25,7 @@ class Node{
         int min_key;
 
         //stores vector of child pointers
-        std::vector<Node*> child;
+        std::vector<Node*> children;
 
         //current number of keys
         int num_keys;
@@ -33,84 +33,50 @@ class Node{
         //checks if the node is a leaf, True if leaf, false if not
         bool isLeaf;
 
-        friend class Btree;
-
-        public:
-        //constructor that takes in minimum number of keys and isLeaf
-        Node(int min_key, bool leaf);
-
-};
-
-class Btree{
-
-        private:
-        Node* root;
-
-        //Minimum degree of Btree
-        int min;
-
-        //Repeated numbers found in the search method
-        int repeated_num;
-
-        //Main insert, directs to methods like split_child/insert_non_full
-        Node* insert(int data, Node* root);
-
-        //searches the tree finding repeats, returns count(see above guidelines)
-        Node* search(int data, Node* root);
+        //splits nodes if too big
+        void split_child(int index, Node* child);
 
         //preorder, post order, in order (probably needed so we generate dot file)
         void traverse();
 
         //inserts into a non full node
-        void insert_non_full(Btree* root, int data);
+        void insert_non_full(int key);
 
-        //splits nodes if too big
-        void split_child(Btree* root, int data);
+public:
+        //constructor that takes in minimum number of keys and isLeaf
+        Node(int min_key, bool isLeaf);
 
-        //Removes a key from the B-tree while preserving the B-tree properties.
-        void deleteKey(int data);
+        //searches the tree finding repeats, returns count(see above guidelines)
+        Node* search(int key);
 
-        // Merges two nodes when deleting a key
-        void mergeNodes(Node* node1, Node* node2);
+        friend class Btree;
 
-        // Splits a node into two nodes when it becomes full
-        void split(Node* node);
+};
 
-        // Merges a node with its sibling when it becomes underflowed
-        void merge(Node* node);
+class Btree{
 
-        // Finds the successor key in the B-tree
-        int findSuccessor(int data);
+private:
+        Node* root;
 
-        // Finds the predecessor key in the B-tree
-        int findPredecessor(int data);
+        //Minimum degree of Btree
+        int min_key;
 
-        // Retrieves all key-value pairs within the given range
-        void rangeQuery(int start, int end);
-
-        // Adjusts the B-tree structure after a deletion operation
-        void adjustAfterDelete(Node* node);
-
-        // Adjusts the B-tree structure after an insertion operation
-        void adjustAfterInsert(Node* node);
-
-        // Calculates and returns the height of the B-tree
-        int getHeight();
-
-        // Prints the structure of the B-tree for visualization and debugging purposes
-        void printTree();
-
+        //Repeated numbers found in the search method
+        int repeated_num;
 
 public:
         //constructor of the B tree class takes in degree
-        Btree(int degree);
+        Btree(int min_key);
 
         //Public method to call private insert method
-        void insert(int data);
+        void insert(int key);
 
         //Public method to call private search method
-        void search(int data);
+        Node* search(int key);
 
         //Public method to call private traverse method
         void traverse();
+
+        // Prints the structure of the B-tree for visualization and debugging purposes
+        void printTree();
 };
