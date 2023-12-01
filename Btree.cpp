@@ -24,19 +24,18 @@ Node::Node(int min_key, bool isLeaf)
 
 //Jaiden Diaz
 //traverse all nodes in a subtree rooted with node
-void Node::traverse(){
-    // Implement your insertion logic here
-    //I would leave this until last since we may or
-    //may not need it for the ouput
+void Node::traverse() {
     int i;
-    for (i = 0; i < numKeys; i++) {
-        if (!isLeaf)
+    for (i = 0; i < num_keys; i++) {
+        if (!isLeaf) {
             children[i]->traverse();
+        }
         std::cout << " " << keys[i];
     }
 
-    if (!isLeaf)
+    if (!isLeaf) {
         children[i]->traverse();
+    }
 }
 
 //insert helper - Ryan Jensen
