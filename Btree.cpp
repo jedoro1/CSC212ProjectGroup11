@@ -27,12 +27,23 @@ Node::Node(int min_key, bool leaf){
 ////PRIVATE SECTION
 ///
 
+//Jaiden Diaz
 //traverse all nodes in a subtree rooted with node
-void traverse(Node* node){
+void traverse(){
     // Implement your insertion logic here
     //I would leave this until last since we may or
     //may not need it for the ouput
+    int i;
+    for (i = 0; i < numKeys; i++) {
+        if (!isLeaf)
+            children[i]->traverse();
+        std::cout << " " << keys[i];
+    }
+
+    if (!isLeaf)
+        children[i]->traverse();
 }
+
 //insert helper - Ryan Jensen
 void insert_non_full(Btree* root, int data){
     void Btree::insert_non_full(Node* root, int data){
@@ -179,4 +190,11 @@ void Btree::insert(int data) {
 void Btree::search(int data) {
     //search returns count of data in Btree
     search(data, this->root);
+}
+
+//Jaiden Diaz
+// Public method to traverse the entire B-tree
+void BTree::traverse() {
+    if (root != nullptr)
+        root->traverse();
 }
