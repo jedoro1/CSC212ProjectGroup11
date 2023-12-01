@@ -19,7 +19,7 @@
 class Node{
         private:
         // Keys stored in a vector as integers
-        std::vector<int> keys;
+        int* keys;
 
         //minimum number of keys each node requires
         int min_key;
