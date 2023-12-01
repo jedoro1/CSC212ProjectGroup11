@@ -10,16 +10,17 @@
 
 
 //constructor that takes in minimum number of keys and isLeaf
-Node::Node(int min_key, bool leaf){
-    //we can start with min key 2 for simplicity
+Node::Node(int min_key, bool isLeaf){
     //initializing minimum number of keys and if it is a leaf
-    this->min_key = min_key;
-    this->isLeaf = leaf;
-    //resizing keys and child vectors
-    this->keys.resize(2 * min_key - 1);
+    this->min_key = min_key
+    //Initializing isLeaf as whatever is inputted into the parameter
+    this->isLeaf = isLeaf;
+    //resizing child vectors
     this->child.resize(2 * min_key);
     //no keys have been inserted so num keys is 0
     this->num_keys = 0;
+    //Initializing keys
+    this->keys = new int[2 * min_key - 1];
 }
 
 
@@ -145,27 +146,35 @@ Node* Btree::insert(int data, Node* root) {
     return root;
 }
 //search for data in subtree of node given - Ryan Jensen
-Node* Btree::search(int data, Node* root) {
+Node* Btree::search(int key) {
     int i = 0;
 
     //Loop that finds the specific index
-    while (i < root->num_keys && root->keys[i] < data) {
+    while (i < num_keys && keys[i] < key) {
         i++;
     }
 
     //Checks if we've reached the key
-    if (data == root->keys[i] && i < root->num_keys){
-        return root;
+    if (key == keys[i] && i < num_keys){
+        int j = i;
+        while(j < num_keys){
+            if (keys[j] == keys[i]){
+                repeated_num++;
+            }
+        }
+        std::cout<<"The key was found!"<<std::endl;
+        std::cout<<"The key repeated " << repeated_num << " times." << std::endl;
+        return this;
     }
 
     //Check if the node is a leaf
-    if (root->isLeaf){
+    if (isLeaf){
+        std::cout<<"The key was not found :(."<<std::endl;
         return nullptr;
     }
 
     //Recursively move to the child node.
-    return search(data, root->child[i]);
-}
+    return children[i]->search(key);
 
 ////
 ////PUBLIC SECTION
