@@ -81,7 +81,7 @@ float time_func_BST(BSTree t, const char *name, int key, BSTNode* root) {
     }
     else if (! strcmp(name, "search")) {
         c_start = std::clock();
-        t.search(root, key);
+        t.search(key);
         c_end = std::clock();
     }
     else if (! strcmp(name, "inorder")) {
