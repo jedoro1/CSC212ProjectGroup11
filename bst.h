@@ -24,6 +24,7 @@ private:
     void preorder(BSTNode* node, std::ostream& os);
     void inorder(BSTNode* node, std::ostream& os);
     void postorder(BSTNode* node, std::ostream& os);
+    bool search(BSTNode* node, int data);
 
 public:
     BSTNode* root;
@@ -35,6 +36,7 @@ public:
     void preorder(std::ostream& os = std::cout);
     void inorder(std::ostream& os = std::cout);
     void postorder(std::ostream& os = std::cout);
-    bool search(BSTNode* node, int data);
+    bool search(int data);
 
 };
+
