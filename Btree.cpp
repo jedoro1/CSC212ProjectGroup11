@@ -23,19 +23,29 @@ Node::Node(int min_key, bool isLeaf)
 ///
 
 //Jaiden Diaz
+//Edited by Ryan Jensen
 //traverse all nodes in a subtree rooted with node
-void Node::traverse() {
+int Node::traverse(int key, int repeated_nums) {
     int i;
+
+    for (i = 0; i < num_keys; i++) {
+        if(key == keys[i]){
+            repeated_nums++;
+        }
+    }
+
     for (i = 0; i < num_keys; i++) {
         if (!isLeaf) {
-            children[i]->traverse();
+            repeated_nums += children[i]->traverse(key, 0);
         }
         std::cout << " " << keys[i];
     }
 
-    if (!isLeaf) {
-        children[i]->traverse();
+    if (!isLeaf){
+        repeated_nums += children[i]->traverse(key, 0);
     }
+
+    return repeated_nums;
 }
 
 //insert helper - Ryan Jensen
@@ -141,10 +151,15 @@ Node* Node::search(int key) {
     }
 
     if (keys[i] == key) {
+        repeated_nums = traverse(key, repeated_nums);
+        std::cout<<std::endl;
+        std::cout<<"Key was found!"<<std::endl;
+        std::cout<<"The key was repeated "<< repeated_nums
         return this;
     }
 
     if (isLeaf) {
+        std::cout<<"Key not found :(."<<std::endl;
         return nullptr;
     }
 
@@ -161,9 +176,10 @@ Node* Node::search(int key) {
 Btree::Btree(int min_key) : root(nullptr), min_key(min_key) {}
 
 // Public method to traverse the entire B-tree
-void Btree::traverse() {
+void Btree::traverse(int key) {
+    int repeated_nums = 0;
     if (root != nullptr) {
-        root->traverse();
+        root->traverse(key, repeated_nums);
     }
 }
 
