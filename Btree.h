@@ -37,7 +37,7 @@ private:
         void split_child(int index, Node* child);
 
         //preorder, post order, in order (probably needed so we generate dot file)
-        void traverse();
+        void traverse(int key, int repeated_nums);
 
         //inserts into a non full node
         void insert_non_full(int key);
@@ -61,9 +61,6 @@ private:
         //Minimum degree of Btree
         int min_key;
 
-        //Repeated numbers found in the search method
-        int repeated_num;
-
 public:
         //constructor of the B tree class takes in degree
         Btree(int min_key);
@@ -75,8 +72,5 @@ public:
         Node* search(int key);
 
         //Public method to call private traverse method
-        void traverse();
-
-        // Prints the structure of the B-tree for visualization and debugging purposes
-        void printTree();
+        void traverse(int key);
 };
