@@ -178,3 +178,8 @@ bool BSTree::search(BSTNode* node, int data){
         return search(node->left, data);
     }
 }
+
+//Start from the root and make our way down the tree 
+bool BSTree::search(int data){
+    return this->search(this->root, data);
+}
