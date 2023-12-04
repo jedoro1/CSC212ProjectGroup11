@@ -33,8 +33,7 @@ float time_func_Btree(Btree t, const char *name, int key) {
     return output;
 }
 
-//Function to calculate time complexities for LLRBTrees
-float time_func_LLRB(LLRBTree t, const char *name, int key) {
+float time_func_Btree(Btree t, const char *name, std::string key) {
     unsigned long c_start, c_end;
 
     if (! strcmp(name, "insert")) {
@@ -47,19 +46,9 @@ float time_func_LLRB(LLRBTree t, const char *name, int key) {
         t.search(key);
         c_end = std::clock();
     }
-    else if (! strcmp(name, "inorder")) {
+    else if (! strcmp(name, "traverse")) {
         c_start = std::clock();
-        t.inorder();
-        c_end = std::clock();
-    }
-    else if (! strcmp(name, "preorder")) {
-        c_start = std::clock();
-        t.preorder();
-        c_end = std::clock();
-    }
-    else if (! strcmp(name, "postorder")) {
-        c_start = std::clock();
-        t.postorder();
+        t.traverse(key);
         c_end = std::clock();
     }
     else{
@@ -70,41 +59,4 @@ float time_func_LLRB(LLRBTree t, const char *name, int key) {
     float output = 1.0 * (c_end - c_start) / CLOCKS_PER_SEC;
     return output;
 }
-
-float time_func_BST(BSTree t, const char *name, int key, BSTNode* root) {
-    unsigned long c_start, c_end;
-
-    if (! strcmp(name, "insert")) {
-        c_start = std::clock();
-        t.insert(key);
-        c_end = std::clock();
-    }
-    else if (! strcmp(name, "search")) {
-        c_start = std::clock();
-        t.search(key);
-        c_end = std::clock();
-    }
-    else if (! strcmp(name, "inorder")) {
-        c_start = std::clock();
-        t.inorder();
-        c_end = std::clock();
-    }
-    else if (! strcmp(name, "preorder")) {
-        c_start = std::clock();
-        t.preorder();
-        c_end = std::clock();
-    }
-    else if (! strcmp(name, "postorder")) {
-        c_start = std::clock();
-        t.postorder();
-        c_end = std::clock();
-    }
-    else{
-        std::cout << "Invalid method call" << std::endl;
-        return 0;
-    }
-
-    float output = 1.0 * (c_end - c_start) / CLOCKS_PER_SEC;
-    return output;
-}
-
+   
