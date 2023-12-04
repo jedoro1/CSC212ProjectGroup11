@@ -1,3 +1,8 @@
+#include <iostream>
+#include <random>
+#include "Btree.h"
+#include "time_functions.h"
+
 int main(int argc, char* argv[]) {
     //This variable controls whether you use integers or strings (0 or 1 respectively).
     int mode;
@@ -419,6 +424,8 @@ int main(int argc, char* argv[]) {
             }
 
             std::cout << "A file for your visualization of your B-Tree has been made."<<std::endl;
+            std::cout << std::endl;
+            std::cout << "Go to https://dreampuf.github.io/GraphvizOnline/ and insert your dot file to visualize your graph! (The website we used in Lab 12)" << std::endl;
             std::cout << std::endl;
         }
         ////USER INPUTS DONE
