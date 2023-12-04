@@ -1,7 +1,16 @@
+//
+// Created by ryanj on 11/29/2023.
+//
+
+//For this commit I just cleaned up the cpp file and labeled the methods I'm working on.
+//I decided printing out the repeatednum inside the method is the best approach
+
 #include "Btree.h"
 #include <iostream>
 
 
+//constructor that takes in minimum number of keys and isLeaf
+// Constructor for Node
 Node::Node(int min_key, bool isLeaf)
         : min_key(min_key), isLeaf(isLeaf), num_keys(0) {
     keys = new int[2 * min_key - 1];
@@ -19,12 +28,14 @@ Node::Node(int min_key, bool isLeaf)
 int Node::traverse(int key, int repeated_nums) {
     int i;
 
+    //Counts repeated key in the B-Tree
     for (i = 0; i < num_keys; i++) {
         if(key == keys[i]){
             repeated_nums++;
         }
     }
 
+    // Traverse child nodes
     for (i = 0; i < num_keys; i++) {
         if (!isLeaf) {
             repeated_nums += children[i]->traverse(key, 0);
@@ -43,12 +54,14 @@ int Node::traverse(int key, int repeated_nums) {
 int Node::traverse(std::string key, int repeated_nums) {
     int i;
 
+    //Counts repeated keys in B-Tree
     for (i = 0; i < num_keys; i++) {
         if(key == s_keys[i]){
             repeated_nums++;
         }
     }
 
+    //Traverse child nodes
     for (i = 0; i < num_keys; i++) {
         if (!isLeaf) {
             repeated_nums += children[i]->traverse(key, 0);
@@ -67,7 +80,6 @@ int Node::traverse(std::string key, int repeated_nums) {
 //edited -Jaiden Diaz
 void Node::insert_non_full(int key) {
     int i = num_keys - 1;
-
     if (isLeaf) {
         // If the node is a leaf, insert the key into the correct position
         while (i >= 0 && keys[i] > key) {
@@ -259,18 +271,28 @@ void Btree::insert(std::string key) {
 Node* Node::search(int key) {
     int i = 0;
     int repeated_nums = 0;
+
+    //Finds spot in keys
     while (i < num_keys && key > keys[i]) {
         i++;
     }
 
+    //If it found the key, print out key was found with repeated_nums
     if (keys[i] == key) {
         repeated_nums = traverse(key, repeated_nums);
         std::cout<<std::endl;
         std::cout<<"Key was found!"<<std::endl;
-        std::cout<<"The key was repeated "<< repeated_nums << " times." << std::endl;
+
+        if(repeated_nums == 1){
+            std::cout<<"The key was repeated "<< repeated_nums << " time." << std::endl;
+        }
+        else {
+            std::cout << "The key was repeated " << repeated_nums << " times." << std::endl;
+        }
         return this;
     }
 
+    //Reached the end of the subtree, didn't find the key
     if (isLeaf) {
         std::cout<<"Key not found :(."<<std::endl;
         return nullptr;
@@ -282,10 +304,13 @@ Node* Node::search(int key) {
 Node* Node::search(std::string key) {
     int i = 0;
     int repeated_nums = 0;
+
+    //Finds spot in keys
     while (i < num_keys && key > s_keys[i]) {
         i++;
     }
 
+    //If it found the key, print out key was found with repeated_nums
     if (s_keys[i] == key) {
         repeated_nums = traverse(key, repeated_nums);
         std::cout<<std::endl;
@@ -294,6 +319,7 @@ Node* Node::search(std::string key) {
         return this;
     }
 
+    //Reached the end of the subtree, didn't find the key
     if (isLeaf) {
         std::cout<<"Key not found :(."<<std::endl;
         return nullptr;
@@ -335,60 +361,63 @@ Node* Btree::search(std::string key) {
     return (root == nullptr) ? nullptr : root->search(key);
 }
 
-
-
-
-
+//Method to write dotfile
 void Btree::writeNodeDot(Node* node, std::ostream& dotfile, int& nodeId, int mode) {
-    
+
+    //Integer
     if(mode == 0){
-   
-    int currentId = nodeId++;
-    dotfile << "  node" << currentId << " [label=\"{";
-    if (node->keys) {
-        for (int i = 0; i < node->num_keys ; ++i) {  // Assuming -1 marks the end of keys
-            dotfile << " <data" << i << "> " << node-> keys[i];
-            if ( i != node->num_keys-1 ) {
-                dotfile << " | ";
+
+        int currentId = nodeId++;
+        dotfile << "  node" << currentId << " [label=\"{";
+        if (node->keys) {
+            //Iterates through keys and inserts into dot file
+            for (int i = 0; i < node->num_keys ; ++i) {  // Assuming -1 marks the end of keys
+                dotfile << " <data" << i << "> " << node-> keys[i];
+                //Adds | between each word
+                if ( i != node->num_keys-1 ) {
+                    dotfile << " | ";
+                }
+            }
+        }
+        dotfile << "}\"];\n";
+
+        //If the node has children, does the same thing but for children
+        if (!node->children.empty()) {
+            for (int i = 0; node->children[i] != nullptr; ++i) {  // Assuming nullptr marks the end of children
+                writeNodeDot(node->children[i], dotfile, nodeId, mode);
+                int childId = nodeId - 1;
+                dotfile << "  node" << currentId << ":data" << i << " -> node" << childId << ";\n";
             }
         }
     }
-    dotfile << "}\"];\n";
-
-    if (!node->children.empty()) {
-        for (int i = 0; node->children[i] != nullptr; ++i) {  // Assuming nullptr marks the end of children
-            writeNodeDot(node->children[i], dotfile, nodeId, mode);
-            int childId = nodeId - 1;
-            dotfile << "  node" << currentId << ":data" << i << " -> node" << childId << ";\n";
-        }
-    }
-    }
 
 
+    //Same thing for strings instead
     if(mode == 1){
-    
-    int currentId = nodeId++;
-    dotfile << "  node" << currentId << " [label=\"{";
-    if (node->s_keys) {
-        for (int i = 0; node->s_keys[i] != ""; ++i) {  // Assuming -1 marks the end of keys
-            dotfile << " <data" << i << "> " << node->s_keys[i];
-            if (node->s_keys[i + 1] != "") {
-                dotfile << " | ";
+
+        int currentId = nodeId++;
+        dotfile << "  node" << currentId << " [label=\"{";
+        if (node->s_keys) {
+            for (int i = 0; i < node->num_keys; ++i) {  // Assuming -1 marks the end of keys
+                dotfile << " <data" << i << "> " << node->s_keys[i];
+                if (i != node->num_keys-1) {
+                    dotfile << " | ";
+                }
             }
         }
-    }
-    dotfile << "}\"];\n";
+        dotfile << "}\"];\n";
 
-    if (!node->children.empty()) {
-        for (int i = 0; node->children[i] != nullptr; ++i) {  // Assuming nullptr marks the end of children
-            writeNodeDot(node->children[i], dotfile, nodeId, mode);
-            int childId = nodeId - 1;
-            dotfile << "  node" << currentId << ":data" << i << " -> node" << childId << ";\n";
+        if (!node->children.empty()) {
+            for (int i = 0; node->children[i] != nullptr; ++i) {  // Assuming nullptr marks the end of children
+                writeNodeDot(node->children[i], dotfile, nodeId, mode);
+                int childId = nodeId - 1;
+                dotfile << "  node" << currentId << ":data" << i << " -> node" << childId << ";\n";
+            }
         }
-    }
     }
 }
 
+//Helper method that calls the dot file writer and opens the file
 void Btree::writeDotFile(Node* root, const std::string& filename, int mode ) {
     std::ofstream dotfile(filename);
     if (!dotfile.is_open()) {
@@ -403,6 +432,7 @@ void Btree::writeDotFile(Node* root, const std::string& filename, int mode ) {
     dotfile << "}\n";
 }
 
+//Helper dot file method
 void Btree::writeDotFile(const std::string& filename, int mode){
     return this->writeDotFile(this->root, filename, mode);
 }
