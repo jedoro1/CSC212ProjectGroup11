@@ -3,32 +3,68 @@
 #include "Btree.h"
 #include "time_functions.h"
 
-
 int main(int argc, char* argv[]) {
+    int mode;
+    std::string fname = argv[1];
     Btree btree(3);
 
-    int random_num = std::stoi(argv[1]);
-
-    //Code from <random> library to get random numbers from 1 to whatever the user inputs
+    std::cout<<"Are you using integers or strings? (enter 0 for integers, 1 for strings)" << std::endl;
+    while (!(std::cin >> mode)) {
+        std::cout << "Please input either 0 or 1." << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
     // Seed for the random number generator
     std::random_device rd;
-    // Mersenne Twister random number engine
-    std::mt19937 gen(rd());
-    // Define the range for random numbers (1 to userAmount)
-    std::uniform_int_distribution<int> distribution(1, random_num);
 
-    //For loop that inserts random numbers into our B-tree
-    std::cout << "Inserting " << random_num << " random numbers into the B-Tree..." << std::endl;
-    int number;
-    for(int i = 1; i <= random_num; i++){
-        number = distribution(gen);
-        btree.insert(number);
+    //Integer b-tree is selected
+    if (mode == 0) {
+        int random_num = 0;
+        std::cout << "Please choose the amount of random numbers to insert into B-Tree" << std::endl;
+        std::cin >> random_num;
+        //Code from <random> library to get random numbers from 1 to whatever the user inputs
+        // Mersenne Twister random number engine
+        std::mt19937 gen(rd());
+        // Define the range for random numbers (1 to userAmount)
+        std::uniform_int_distribution<int> distribution(1, random_num);
+
+        //For loop that inserts random numbers into our B-tree
+        std::cout << "Inserting " << random_num << " random numbers into the B-Tree..." << std::endl;
+        int number;
+        for (int i = 1; i <= random_num; i++) {
+            number = distribution(gen);
+            btree.insert(number);
+        }
+    }
+    //Words are selected (mode 1);
+    else if(mode == 1){
+        std::cout<<fname<<std::endl;
+        std::ifstream inputF(fname);
+
+        std::string line;
+
+        std::getline(inputF, line);
+        std::stringstream ss(line);
+
+        std::string s;
+        while(ss >> s){
+            btree.insert(s);
+        }
+
+        inputF.close();
     }
 
+    std::string s;
     //Showing your current B-Tree
     std::cout << "V YOUR B-TREE V" << std::endl;
-    btree.traverse(0);
+    if(mode == 0){
+        btree.traverse(0);
+    }
+    if(mode == 1){
+        btree.traverse(s);
+    }
     std::cout << std::endl;
+
 
     ////USER INPUT SECTION
 
@@ -53,29 +89,55 @@ int main(int argc, char* argv[]) {
         ////USER INPUTS INSERT
         if(method == "insert"){
             int key;
+            std::string s_key;
+
             std::cout << std::endl;
-            std::cout << "What integer do you want to insert into the B-Tree?" << std::endl;
 
             //User chooses the key they want to insert with error handling
-            while (!(std::cin >> key)) {
-                std::cout << "Please input a valid integer." << std::endl;
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if(mode == 0) {
+                std::cout << "What integer do you want to insert into the B-Tree?" << std::endl;
+                while (!(std::cin >> key)) {
+                    std::cout << "Please input a valid integer." << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+                std::cout << "Inserted number into tree below..."<<std::endl;
+            }
+            if(mode == 1) {
+                std::cout << "What string do you want to insert into the B-Tree?" << std::endl;
+                while (!(std::cin >> s_key)) {
+                    std::cout << "Please input a valid string." << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+                std::cout << "Inserted string into tree below..."<<std::endl;
             }
 
-            std::cout << "Inserted number into tree below..."<<std::endl;
+
 
             //These two lines calls insert and traverse while recording the time it takes to do each method
-            float BTinsertT = time_func_Btree(btree, "insert", key);
-            float BTtraverseT = time_func_Btree(btree, "traverse", 0);
 
-            std::cout << std::endl;
+            if(mode == 0) {
+                float BTinsertT = time_func_Btree(btree, "insert", key);
+                float BTtraverseT = time_func_Btree(btree, "traverse", 0);
 
-            //These lines print out the times for each method
-            std::cout << "Insertion time for B-Tree --> " << BTinsertT << " seconds" << std::endl;
-            std::cout << "Traverse time for B-Tree --> " << BTtraverseT << " seconds" << std::endl;
+                std::cout << std::endl;
 
-            std::cout << std::endl;
+                //These lines print out the times for each method
+                std::cout << "Insertion time for B-Tree --> " << BTinsertT << " seconds" << std::endl;
+                std::cout << "Traverse time for B-Tree --> " << BTtraverseT << " seconds" << std::endl;
+            }
+
+            if(mode == 1) {
+                float BTinsertT = time_func_Btree(btree, "insert", s_key);
+                float BTtraverseT = time_func_Btree(btree, "traverse", s_key);
+
+                std::cout << std::endl;
+
+                //These lines print out the times for each method
+                std::cout << "Insertion time for B-Tree --> " << BTinsertT << " seconds" << std::endl;
+                std::cout << "Traverse time for B-Tree --> " << BTtraverseT << " seconds" << std::endl;
+            }
 
             std::cout << "Type continue in all lowercase to continue..." << std::endl;
 
@@ -97,24 +159,46 @@ int main(int argc, char* argv[]) {
         ////USER INPUTS SEARCH
         else if(method == "search"){
             int key;
+            std::string s_key;
             std::cout<<std::endl;
-            std::cout << "What integer do you want to search for in the B-Tree?" << std::endl;
 
-            //User inputs key they want to search for with error handling
-            while (!(std::cin >> key)) {
-                std::cout << "Please input a valid integer." << std::endl;
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            if(mode == 0){
+                std::cout << "What integer do you want to search for in the B-Tree?" << std::endl;
+
+                while (!(std::cin >> key)) {
+                    std::cout << "Please input a valid integer." << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+
+                //This line calls the search method while recording the time
+                float BTsearchT = time_func_Btree(btree, "search", key);
+
+                //This line prints out the search time
+                std::cout << "Search time for B-Tree --> " << BTsearchT << " seconds" << std::endl;
+
             }
 
-            //This line calls the search method while recording the time 
-            float BTsearchT = time_func_Btree(btree, "search", key);
-            
+            if (mode == 1){
+                std::cout << "What string do you want to search for in the B-Tree?" << std::endl;
+
+                while (!(std::cin >> s_key)) {
+                    std::cout << "Please input a valid string." << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+
+                //This line calls the search method while recording the time
+                float BTsearchT = time_func_Btree(btree, "search", s_key);
+
+                //This line prints out the search time
+                std::cout << "Search time for B-Tree --> " << BTsearchT << " seconds" << std::endl;
+            }
+
+
             std::cout<<std::endl;
-            
-            //This line prints out the search time
-            std::cout << "Search time for B-Tree --> " << BTsearchT << " seconds" << std::endl;
-            
+
+
             std::cout << "Type continue in all lowercase to continue..." << std::endl;
             std::string con;
             while(con != "continue"){
@@ -131,12 +215,22 @@ int main(int argc, char* argv[]) {
         ////USER INPUTS TRAVERSE
         else if(method == "traverse"){
             //This line calls the traverse method and records the time it takes to traverse the whole tree.
-            float BTtraverseT = time_func_Btree(btree, "traverse", 0);
-            
-            std::cout << std::endl;
-            
-            //This line prints out the traversal time
-            std::cout << "Traverse time for B-Tree --> " << BTtraverseT << " seconds" << std::endl;
+            if(mode == 0) {
+                float BTtraverseT = time_func_Btree(btree, "traverse", 0);
+                std::cout << std::endl;
+
+                //This line prints out the traversal time
+                std::cout << "Traverse time for B-Tree --> " << BTtraverseT << " seconds" << std::endl;
+
+            }
+            if(mode == 1) {
+                float BTtraverseT = time_func_Btree(btree, "traverse", "woohoo!");
+                std::cout << std::endl;
+
+                //This line prints out the traversal time
+                std::cout << "Traverse time for B-Tree --> " << BTtraverseT << " seconds" << std::endl;
+
+            }
 
             std::cout << "Type continue in all lowercase to continue..." << std::endl;
             std::string con;
@@ -165,7 +259,7 @@ int main(int argc, char* argv[]) {
 
             std::string answer = "";
             std::cout<<"QUESTION:"<<std::endl;
-            
+
             //First question was randomly chosen
             if(random_q == 1){
                 std::cout<<"What is the time complexity for insert method?"<<std::endl;
@@ -173,13 +267,13 @@ int main(int argc, char* argv[]) {
                 std::cout<<std::endl;
 
                 std::cout<<"Please input answer as a capital letter."<<std::endl;
-                
+
 
                 //Makes user repeats until they get the right answer.
                 while(answer != "A"){
                     //User inputs answer here
                     std::cin>>answer;
-                    
+
                     //Answer is correct, breaks loop
                     if(answer == "A"){
                         std::cout<<std::endl;
@@ -193,7 +287,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
             }
-            
+
             //Second question is randomly chosen
             if(random_q == 2){
                 std::cout<<"What is the time complexity for search method?"<<std::endl;
@@ -205,7 +299,7 @@ int main(int argc, char* argv[]) {
                 while(answer != "A"){
                     //User inputs answer here
                     std::cin>>answer;
-                    
+
                     //Answer is correct, breaks loop
                     if(answer == "A"){
                         std::cout<<std::endl;
@@ -219,7 +313,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
             }
-            
+
             //Third question is randomly chosen
             if(random_q == 3){
                 std::cout<<"Which real world scenario/application would you think is the most similar to a B-Tree?"<<std::endl;
@@ -236,7 +330,7 @@ int main(int argc, char* argv[]) {
                 while(answer != "B"){
                     //User inputs answer here
                     std::cin>>answer;
-                    
+
                     //Answer is correct, breaks loop
                     if(answer == "B"){
                         std::cout<<std::endl;
@@ -244,14 +338,14 @@ int main(int argc, char* argv[]) {
                         std::cout<<std::endl;
                         break;
                     }
-                    
+
                     //Answer is incorrect, resets loop
                     else{
                         std::cout << "Try again" << std::endl;
                     }
                 }
             }
-            
+
             //Fourth question is randomly chosen
             if(random_q == 4){
                 std::cout<<"Why should we use a B-Tree?"<<std::endl;
@@ -268,7 +362,7 @@ int main(int argc, char* argv[]) {
                 while(answer != "D"){
                     //User inputs answer here
                     std::cin>>answer;
-                    
+
                     //Answer is correct, break loop
                     if(answer == "D"){
                         std::cout<<std::endl;
@@ -304,11 +398,10 @@ int main(int argc, char* argv[]) {
             //Ends the program
             return 0;
         }
-        
+
         //If the user inputs something that isn't one of the methods, ask them again with an error message.
         else{
             std::cout << "Please try again... type the method you want exactly as it's shown in the menu." << std::endl;
         }
     }
 }
-    
