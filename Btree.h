@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
+#include <string>
 
 
 class Node{
@@ -9,6 +10,7 @@ private:
     // Keys stored in a vector as integers
     int* keys;
 
+    // Keys stored in a vector as strings
     std::string* s_keys;
 
     //minimum number of keys each node requires
@@ -25,18 +27,14 @@ private:
 
     //splits nodes if too big
     void split_child(int index, Node* child);
-
     void split_child_string(int index, Node*child);
 
     //preorder, post order, in order (probably needed so we generate dot file)
     int traverse(int key, int repeated_nums);
-
-    //Same code but for strings
     int traverse(std::string key, int repeated_nums);
 
     //inserts into a non full node
     void insert_non_full(int key);
-
     void insert_non_full(std::string key);
 
 public:
@@ -45,7 +43,6 @@ public:
 
     //searches the tree finding repeats, returns count(see above guidelines)
     Node* search(int key);
-
     Node* search(std::string key);
 
     friend class Btree;
@@ -67,24 +64,19 @@ public:
 
     //Public method to call private insert method
     void insert(int key);
-
     void insert(std::string key);
 
     //Public method to call private search method
     Node* search(int key);
-
     Node* search(std::string key);
 
     //Public method to call private traverse method
     void traverse(int key);
-
     void traverse(std::string key);
 
+    //Dot file methods
     void writeNodeDot( Node* node, std::ostream& dotfile, int& nodeId, int mode);
     void writeDotFile(Node* root, const std::string& filename, int mode);
     void writeDotFile(const std::string& filename, int mode);
-   
-
-
 
 };
