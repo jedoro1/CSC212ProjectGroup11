@@ -1,13 +1,14 @@
-#include <iostream>
-#include <random>
-#include "Btree.h"
-#include "time_functions.h"
-
 int main(int argc, char* argv[]) {
+    //This variable controls whether you use integers or strings (0 or 1 respectively).
     int mode;
+
+    //input txt file with words
     std::string fname = argv[1];
+
+    //Creating btree
     Btree btree(3);
 
+    //This block of code takes in the mode with error handling
     std::cout<<"Are you using integers or strings? (enter 0 for integers, 1 for strings)" << std::endl;
     while (!(std::cin >> mode)) {
         std::cout << "Please input either 0 or 1." << std::endl;
@@ -22,7 +23,9 @@ int main(int argc, char* argv[]) {
         int random_num = 0;
         std::cout << "Please choose the amount of random numbers to insert into B-Tree" << std::endl;
         std::cin >> random_num;
+
         //Code from <random> library to get random numbers from 1 to whatever the user inputs
+
         // Mersenne Twister random number engine
         std::mt19937 gen(rd());
         // Define the range for random numbers (1 to userAmount)
@@ -36,8 +39,11 @@ int main(int argc, char* argv[]) {
             btree.insert(number);
         }
     }
+
     //Words are selected (mode 1);
     else if(mode == 1){
+
+        //Reading from a file and inserting into b-tree
         std::cout<<fname<<std::endl;
         std::ifstream inputF(fname);
 
@@ -47,6 +53,8 @@ int main(int argc, char* argv[]) {
         std::stringstream ss(line);
 
         std::string s;
+
+        //While loop that takes every word and uses
         while(ss >> s){
             btree.insert(s);
         }
@@ -54,13 +62,13 @@ int main(int argc, char* argv[]) {
         inputF.close();
     }
 
-    std::string s;
     //Showing your current B-Tree
     std::cout << "V YOUR B-TREE V" << std::endl;
     if(mode == 0){
         btree.traverse(0);
     }
     if(mode == 1){
+        std::string s;
         btree.traverse(s);
     }
     std::cout << std::endl;
@@ -79,7 +87,8 @@ int main(int argc, char* argv[]) {
         std::cout << "Your options are:" << std::endl;
         std::cout << "insert (Inputs an integer into the B-Tree)" << std::endl;
         std::cout << "search (searches for an integer into the B-Tree)" << std::endl;
-        std::cout << "traverse (Prints out all the numbers in your current B-Tree)" << std::endl;
+        std::cout << "traverse (Prints out all the numbers in your current B-Tree in order)" << std::endl;
+        std::cout << "show (Creates a dot file visualization of your B-Tree)" << std::endl;
         std::cout << "quiz (Test your knowledge on a B-Tree topic!)" << std::endl;
         std::cout << "done (Ends the program)" << std::endl;
 
@@ -113,9 +122,7 @@ int main(int argc, char* argv[]) {
                 std::cout << "Inserted string into tree below..."<<std::endl;
             }
 
-
-
-            //These two lines calls insert and traverse while recording the time it takes to do each method
+            //These lines calls insert and traverse while recording the time it takes to do each method
 
             if(mode == 0) {
                 float BTinsertT = time_func_Btree(btree, "insert", key);
@@ -162,9 +169,11 @@ int main(int argc, char* argv[]) {
             std::string s_key;
             std::cout<<std::endl;
 
+            //String search
             if(mode == 0){
                 std::cout << "What integer do you want to search for in the B-Tree?" << std::endl;
 
+                //User inputs key with error handling
                 while (!(std::cin >> key)) {
                     std::cout << "Please input a valid integer." << std::endl;
                     std::cin.clear();
@@ -179,9 +188,11 @@ int main(int argc, char* argv[]) {
 
             }
 
+            //String
             if (mode == 1){
                 std::cout << "What string do you want to search for in the B-Tree?" << std::endl;
 
+                //User inputs string with error handling
                 while (!(std::cin >> s_key)) {
                     std::cout << "Please input a valid string." << std::endl;
                     std::cin.clear();
@@ -198,7 +209,7 @@ int main(int argc, char* argv[]) {
 
             std::cout<<std::endl;
 
-
+            //Stop in code
             std::cout << "Type continue in all lowercase to continue..." << std::endl;
             std::string con;
             while(con != "continue"){
@@ -223,6 +234,7 @@ int main(int argc, char* argv[]) {
                 std::cout << "Traverse time for B-Tree --> " << BTtraverseT << " seconds" << std::endl;
 
             }
+            //String
             if(mode == 1) {
                 float BTtraverseT = time_func_Btree(btree, "traverse", "woohoo!");
                 std::cout << std::endl;
@@ -232,6 +244,7 @@ int main(int argc, char* argv[]) {
 
             }
 
+            //Stop in code
             std::cout << "Type continue in all lowercase to continue..." << std::endl;
             std::string con;
             while(con != "continue"){
@@ -246,6 +259,7 @@ int main(int argc, char* argv[]) {
         }
 
         ////USER INPUTS QUIZ
+        //4 randomly chosen questions to ask the user with 4 multiple choice options
         else if(method == "quiz"){
             // Mersenne Twister random number engine
             std::mt19937 gen(rd());
@@ -257,6 +271,7 @@ int main(int argc, char* argv[]) {
 
             std::cout<<std::endl;
 
+            //Variable to hold the user's answer
             std::string answer = "";
             std::cout<<"QUESTION:"<<std::endl;
 
@@ -377,7 +392,7 @@ int main(int argc, char* argv[]) {
                 }
             }
 
-
+            //Stop in code
             std::string con;
             std::cout << "Type continue in all lowercase to continue..." << std::endl;
             while(con != "continue"){
@@ -392,7 +407,22 @@ int main(int argc, char* argv[]) {
 
 
         }
+        ////USER INPUTS SHOW
+        else if(method == "show"){
+            std::cout<<std::endl;
+            //Method call for writing the dot file.
+            if(mode == 0) {
+                btree.writeDotFile("dot.txt", mode);
+            }
+            if(mode == 1) {
+                btree.writeDotFile("dot_string.txt", mode);
+            }
+
+            std::cout << "A file for your visualization of your B-Tree has been made."<<std::endl;
+            std::cout << std::endl;
+        }
         ////USER INPUTS DONE
+        //User inputs done and ends the program
         else if(method == "done"){
             std::cout << "Thanks for using our program to learn more about B-Trees!" << std::endl;
             //Ends the program
