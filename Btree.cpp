@@ -1,3 +1,7 @@
+#include "Btree.h"
+#include <iostream>
+
+
 Node::Node(int min_key, bool isLeaf)
         : min_key(min_key), isLeaf(isLeaf), num_keys(0) {
     keys = new int[2 * min_key - 1];
@@ -329,4 +333,76 @@ Node* Btree::search(int key) {
 
 Node* Btree::search(std::string key) {
     return (root == nullptr) ? nullptr : root->search(key);
+}
+
+
+
+
+
+void Btree::writeNodeDot(Node* node, std::ostream& dotfile, int& nodeId, int mode) {
+    
+    if(mode == 0){
+   
+    int currentId = nodeId++;
+    dotfile << "  node" << currentId << " [label=\"{";
+    if (node->keys) {
+        for (int i = 0; i < node->num_keys ; ++i) {  // Assuming -1 marks the end of keys
+            dotfile << " <data" << i << "> " << node-> keys[i];
+            if ( i != node->num_keys-1 ) {
+                dotfile << " | ";
+            }
+        }
+    }
+    dotfile << "}\"];\n";
+
+    if (!node->children.empty()) {
+        for (int i = 0; node->children[i] != nullptr; ++i) {  // Assuming nullptr marks the end of children
+            writeNodeDot(node->children[i], dotfile, nodeId, mode);
+            int childId = nodeId - 1;
+            dotfile << "  node" << currentId << ":data" << i << " -> node" << childId << ";\n";
+        }
+    }
+    }
+
+
+    if(mode == 1){
+    
+    int currentId = nodeId++;
+    dotfile << "  node" << currentId << " [label=\"{";
+    if (node->s_keys) {
+        for (int i = 0; node->s_keys[i] != ""; ++i) {  // Assuming -1 marks the end of keys
+            dotfile << " <data" << i << "> " << node->s_keys[i];
+            if (node->s_keys[i + 1] != "") {
+                dotfile << " | ";
+            }
+        }
+    }
+    dotfile << "}\"];\n";
+
+    if (!node->children.empty()) {
+        for (int i = 0; node->children[i] != nullptr; ++i) {  // Assuming nullptr marks the end of children
+            writeNodeDot(node->children[i], dotfile, nodeId, mode);
+            int childId = nodeId - 1;
+            dotfile << "  node" << currentId << ":data" << i << " -> node" << childId << ";\n";
+        }
+    }
+    }
+}
+
+void Btree::writeDotFile(Node* root, const std::string& filename, int mode ) {
+    std::ofstream dotfile(filename);
+    if (!dotfile.is_open()) {
+        std::cerr << "Error: Unable to open Dot file for writing.\n";
+        return;
+    }
+
+    dotfile << "digraph BTree {\n";
+    dotfile << "  node [shape=record];\n";
+    int nodeId = 0;
+    writeNodeDot(root, dotfile, nodeId, mode);
+    dotfile << "}\n";
+}
+
+void Btree::writeDotFile(const std::string& filename, int mode){
+    return this->writeDotFile(this->root, filename, mode);
 }
