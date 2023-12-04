@@ -1,3 +1,8 @@
+#include <iostream>
+#include <random>
+#include "Btree.h"
+#include "time_functions.h"
+
 int main(int argc, char* argv[]) {
     //This variable controls whether you use integers or strings (0 or 1 respectively).
     int mode;
@@ -21,8 +26,25 @@ int main(int argc, char* argv[]) {
     //Integer b-tree is selected
     if (mode == 0) {
         int random_num = 0;
-        std::cout << "Please choose the amount of random numbers to insert into B-Tree" << std::endl;
-        std::cin >> random_num;
+        std::cout << "Please choose the amount of random numbers to insert into B-Tree (1 to 10000)" << std::endl;
+
+        //Takes in random_num from user with error handling
+        while (!(std::cin >> random_num)) {
+            std::cout << "Please input a valid integer." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+
+        //Checks size of random_num0
+        while(random_num > 10000 || random_num < 1){
+            if(random_num > 10000) {
+                std::cout << "Number is too big, please try a smaller number (1 to 10000)" << std::endl;
+            }
+            if(random_num < 1){
+                std::cout << "Number is less than 1, please try a number bigger than 0 (1 to 10000)" << std::endl;
+            }
+            std::cin>>random_num;
+        }
 
         //Code from <random> library to get random numbers from 1 to whatever the user inputs
 
@@ -40,7 +62,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    //Words are selected (mode 1);
+        //Words are selected (mode 1);
     else if(mode == 1){
 
         //Reading from a file and inserting into b-tree
@@ -163,7 +185,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        ////USER INPUTS SEARCH
+            ////USER INPUTS SEARCH
         else if(method == "search"){
             int key;
             std::string s_key;
@@ -223,7 +245,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        ////USER INPUTS TRAVERSE
+            ////USER INPUTS TRAVERSE
         else if(method == "traverse"){
             //This line calls the traverse method and records the time it takes to traverse the whole tree.
             if(mode == 0) {
@@ -258,8 +280,8 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        ////USER INPUTS QUIZ
-        //4 randomly chosen questions to ask the user with 4 multiple choice options
+            ////USER INPUTS QUIZ
+            //4 randomly chosen questions to ask the user with 4 multiple choice options
         else if(method == "quiz"){
             // Mersenne Twister random number engine
             std::mt19937 gen(rd());
@@ -322,7 +344,7 @@ int main(int argc, char* argv[]) {
                         std::cout<<std::endl;
                         break;
                     }
-                    //Answer is incorrect, resets loop
+                        //Answer is incorrect, resets loop
                     else{
                         std::cout << "Try again" << std::endl;
                     }
@@ -354,7 +376,7 @@ int main(int argc, char* argv[]) {
                         break;
                     }
 
-                    //Answer is incorrect, resets loop
+                        //Answer is incorrect, resets loop
                     else{
                         std::cout << "Try again" << std::endl;
                     }
@@ -385,7 +407,7 @@ int main(int argc, char* argv[]) {
                         std::cout<<std::endl;
                         break;
                     }
-                    //Answer is incorrect, reset loop
+                        //Answer is incorrect, reset loop
                     else{
                         std::cout << "Try again" << std::endl;
                     }
@@ -407,7 +429,7 @@ int main(int argc, char* argv[]) {
 
 
         }
-        ////USER INPUTS SHOW
+            ////USER INPUTS SHOW
         else if(method == "show"){
             std::cout<<std::endl;
             //Method call for writing the dot file.
@@ -420,16 +442,18 @@ int main(int argc, char* argv[]) {
 
             std::cout << "A file for your visualization of your B-Tree has been made."<<std::endl;
             std::cout << std::endl;
+            std::cout << "Go to https://dreampuf.github.io/GraphvizOnline and insert your dot file to visualize your graph!" << std::endl;
+            std::cout << std::endl;
         }
-        ////USER INPUTS DONE
-        //User inputs done and ends the program
+            ////USER INPUTS DONE
+            //User inputs done and ends the program
         else if(method == "done"){
             std::cout << "Thanks for using our program to learn more about B-Trees!" << std::endl;
             //Ends the program
             return 0;
         }
 
-        //If the user inputs something that isn't one of the methods, ask them again with an error message.
+            //If the user inputs something that isn't one of the methods, ask them again with an error message.
         else{
             std::cout << "Please try again... type the method you want exactly as it's shown in the menu." << std::endl;
         }
