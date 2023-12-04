@@ -80,3 +80,11 @@ public:
 
     void traverse(std::string key);
 
+    void writeNodeDot( Node* node, std::ostream& dotfile, int& nodeId, int mode);
+    void writeDotFile(Node* root, const std::string& filename, int mode);
+    void writeDotFile(const std::string& filename, int mode);
+   
+
+
+
+};
