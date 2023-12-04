@@ -1,3 +1,8 @@
+#include <iostream>
+#include <random>
+#include "Btree.h"
+#include "time_functions.h"
+
 int main(int argc, char* argv[]) {
     //This variable controls whether you use integers or strings (0 or 1 respectively).
     int mode;
