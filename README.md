@@ -3,6 +3,10 @@ B-Tree
 
 **_How to compile the code_**
 
+**_YOU NEED TERMINAL INPUT IN YOUR IDE TO RUN THIS PROGRAM_**
+
+**_VSCODE AND CLION SHOULD WORK FINE IF YOU ARE RUNNING THE C++ VERSION WE'VE BEEN USING IN CLASS ALL SEMESTER, THANK YOU_**
+
 Our program requires the user to use a txt file as a command line argument. 
 
 The txt file needs to have spaced out words on the first line of the file to insert them into the B-Tree.
