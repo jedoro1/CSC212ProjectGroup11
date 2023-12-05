@@ -107,9 +107,9 @@ int main(int argc, char* argv[]) {
         std::cout << "Which method do you want to use?" << std::endl;
         std::cout << std::endl;
         std::cout << "Your options are:" << std::endl;
-        std::cout << "insert (Inputs an integer into the B-Tree)" << std::endl;
-        std::cout << "search (searches for an integer into the B-Tree)" << std::endl;
-        std::cout << "traverse (Prints out all the numbers in your current B-Tree in order)" << std::endl;
+        std::cout << "insert (Inputs a key into the B-Tree)" << std::endl;
+        std::cout << "search (Searches for a key from the B-Tree)" << std::endl;
+        std::cout << "traverse (Prints out all the keys in your current B-Tree in order)" << std::endl;
         std::cout << "show (Creates a dot file visualization of your B-Tree)" << std::endl;
         std::cout << "quiz (Test your knowledge on a B-Tree topic!)" << std::endl;
         std::cout << "done (Ends the program)" << std::endl;
